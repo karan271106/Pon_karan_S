@@ -1,2131 +1,1089 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description" content="Pon Karan S — Creative Developer & UI/UX Designer">
-
-    <title>Pon Karan S — Creative Developer & UI/UX Designer</title>
-
-    <style>
-
-        /* RESET */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: auto;
-            background: #000;
-        }
-
-        body {
-            margin: 0;
-            background: #000;
-            color: #fff;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "SF Pro Display",
-                "SF Pro Text",
-                "Helvetica Neue",
-                Arial,
-                sans-serif;
-            overflow-x: hidden;
-        }
-
-
-        /* SCROLL SEQUENCE */
-
-        .scroll-container {
-            position: relative;
-            height: 800vh;
-            width: 100%;
-            background: #000;
-        }
-
-        .sticky-container {
-            position: sticky;
-            top: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background: #000;
-        }
-
-        #sequenceCanvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            object-position: center center;
-            background: #000;
-        }
-
-
-        /* GRADIENT OVERLAY */
-
-        .gradient-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background:
-                linear-gradient(
-                    to bottom,
-                    rgba(0, 0, 0, 0.35) 0%,
-                    rgba(0, 0, 0, 0) 25%,
-                    rgba(0, 0, 0, 0) 70%,
-                    rgba(0, 0, 0, 0.45) 100%
-                );
-            z-index: 2;
-        }
-
-
-        /* TEXT CONTENT */
-
-        .text-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .text-box {
-            position: absolute;
-            width: min(420px, 80vw);
-            padding: 28px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 22px;
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(18, 18, 18, 0.58),
-                    rgba(18, 18, 18, 0.22)
-                );
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            box-shadow:
-                0 24px 80px rgba(0, 0, 0, 0.42),
-                inset 0 1px 0 rgba(255, 255, 255, 0.10);
-            opacity: 0;
-            transform: translateY(35px) scale(0.96);
-            transition:
-                opacity 0.45s ease,
-                transform 0.45s ease;
-            will-change: opacity, transform;
-        }
-
-        .text-box.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .box-1 {
-            left: 8%;
-            top: 50%;
-            transform: translateY(calc(-50% + 35px)) scale(0.96);
-        }
-
-        .box-1.active {
-            transform: translateY(-50%) scale(1);
-        }
-
-        .box-2 {
-            right: 8%;
-            top: 50%;
-            transform: translateY(calc(-50% + 35px)) scale(0.96);
-        }
-
-        .box-2.active {
-            transform: translateY(-50%) scale(1);
-        }
-
-        .box-3 {
-            left: 50%;
-            top: 70%;
-            transform: translate(-50%, 35px) scale(0.96);
-        }
-
-        .box-3.active {
-            transform: translate(-50%, 0) scale(1);
-        }
-
-
-        /* TYPOGRAPHY */
-
-        .text-box .eyebrow {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.55);
-        }
-
-        .text-box h2 {
-            margin-bottom: 12px;
-            font-size: clamp(26px, 3vw, 42px);
-            line-height: 1.05;
-            font-weight: 600;
-            letter-spacing: -0.04em;
-        }
-
-        .text-box p {
-            font-size: 15px;
-            line-height: 1.65;
-            color: rgba(255, 255, 255, 0.68);
-        }
-
-
-        /* PORTFOLIO HEADER */
-
-        .portfolio-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 28px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 8;
-            pointer-events: none;
-        }
-
-        .brand {
-            pointer-events: auto;
-            color: #fff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-        }
-
-        .brand span {
-            opacity: 0.45;
-        }
-
-        .portfolio-nav {
-            display: flex;
-            gap: 28px;
-            pointer-events: auto;
-        }
-
-        .portfolio-nav a {
-            color: rgba(255,255,255,0.62);
-            text-decoration: none;
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            transition: color 0.25s ease;
-        }
-
-        .portfolio-nav a:hover {
-            color: #fff;
-        }
-
-
-        /* LOADER */
-
-        .loader {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .loader.hidden {
-            opacity: 0;
-        }
-
-        .loader-spinner {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-top-color: #fff;
-            animation: spin 0.8s linear infinite;
-        }
-
-        .loader-text {
-            font-size: 11px;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-
-        /* SCROLL INDICATOR */
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 10px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            transition: opacity 0.5s ease;
-        }
-
-        .scroll-indicator.hidden {
-            opacity: 0;
-        }
-
-        .scroll-line {
-            width: 1px;
-            height: 45px;
-            background:
-                linear-gradient(
-                    to bottom,
-                    rgba(255,255,255,0.7),
-                    rgba(255,255,255,0)
-                );
-            animation: scrollPulse 1.6s ease-in-out infinite;
-        }
-
-        @keyframes scrollPulse {
-            0%, 100% {
-                opacity: 0.35;
-                transform: scaleY(0.7);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scaleY(1);
-            }
-        }
-
-
-        /* WORK SECTION */
-
-        .work-section {
-            position: relative;
-            padding: 180px 6vw 160px;
-            background:
-                radial-gradient(
-                    circle at 50% 0%,
-                    rgba(255,255,255,0.06),
-                    transparent 45%
-                ),
-                #000;
-            color: #fff;
-        }
-
-        .section-container {
-            width: min(1400px, 100%);
-            margin: 0 auto;
-        }
-
-        .section-heading {
-            max-width: 720px;
-            margin-bottom: 110px;
-        }
-
-        .section-eyebrow {
-            display: block;
-            margin-bottom: 22px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.45);
-        }
-
-        .section-heading h2 {
-            font-size: clamp(48px, 7vw, 100px);
-            line-height: 0.95;
-            letter-spacing: -0.06em;
-            font-weight: 600;
-            margin-bottom: 30px;
-        }
-
-        .section-heading h2 span {
-            color: rgba(255,255,255,0.35);
-        }
-
-        .section-heading p {
-            max-width: 520px;
-            font-size: 17px;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.55);
-        }
-
-
-        /* PROJECT CARD */
-
-        .project-card {
-            display: grid;
-            grid-template-columns: minmax(280px, 0.7fr) minmax(400px, 1.3fr);
-            min-height: 600px;
-            margin-bottom: 80px;
-            border: 1px solid rgba(255,255,255,0.10);
-            border-radius: 30px;
-            overflow: hidden;
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(255,255,255,0.055),
-                    rgba(255,255,255,0.015)
-                );
-            transition:
-                transform 0.5s ease,
-                border-color 0.5s ease,
-                box-shadow 0.5s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255,255,255,0.20);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.45);
-        }
-
-        .project-info {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 55px;
-            justify-content: space-between;
-        }
-
-        .project-number {
-            font-size: 12px;
-            letter-spacing: 0.15em;
-            color: rgba(255,255,255,0.35);
-        }
-
-        .project-content {
-            max-width: 430px;
-        }
-
-        .project-category {
-            display: block;
-            margin-bottom: 18px;
-            font-size: 10px;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.40);
-        }
-
-        .project-content h3 {
-            margin-bottom: 18px;
-            font-size: clamp(34px, 4vw, 58px);
-            line-height: 0.98;
-            letter-spacing: -0.05em;
-            font-weight: 600;
-        }
-
-        .project-content p {
-            margin-bottom: 32px;
-            font-size: 15px;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.55);
-        }
-
-
-        /* PROJECT BUTTON */
-
-        .project-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 20px;
-            border: 1px solid rgba(255,255,255,0.16);
-            border-radius: 100px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            background: rgba(255,255,255,0.04);
-            transition:
-                background 0.3s ease,
-                border-color 0.3s ease,
-                transform 0.3s ease;
-        }
-
-        .project-button span {
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .project-button:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-            transform: translateY(-2px);
-        }
-
-        .project-button:hover span {
-            transform: translate(3px, -3px);
-        }
-
-
-        /* PROJECT VISUAL */
-
-        .project-visual {
-            position: relative;
-            min-height: 600px;
-            overflow: hidden;
-            background: #111;
-        }
-
-        .project-visual::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 40%);
-            pointer-events: none;
-        }
-
-        .project-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.8s cubic-bezier(.2,.8,.2,1);
-        }
-
-        .project-card:hover .project-visual img {
-            transform: scale(1.04);
-        }
-
-
-        /* =========================================================
-           SHORT FILM SECTION — NEW
-        ========================================================= */
-
-        .film-section {
-            position: relative;
-            padding: 180px 6vw;
-            background:
-                radial-gradient(
-                    circle at 50% 0%,
-                    rgba(255,255,255,0.06),
-                    transparent 45%
-                ),
-                #000;
-            color: #fff;
-        }
-
-        .film-container {
-            width: min(1400px, 100%);
-            margin: 0 auto;
-        }
-
-        .film-heading {
-            max-width: 720px;
-            margin-bottom: 65px;
-        }
-
-        .film-heading h2 {
-            font-size: clamp(48px, 7vw, 100px);
-            line-height: 0.95;
-            letter-spacing: -0.06em;
-            font-weight: 600;
-            margin-bottom: 30px;
-        }
-
-        .film-heading h2 span {
-            color: rgba(255,255,255,0.35);
-        }
-
-        .film-heading p {
-            max-width: 520px;
-            font-size: 17px;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.55);
-        }
-
-        .film-player {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: #080808;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-        }
-
-        .short-film-video {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: #000;
-        }
-
-        .film-play-overlay {
-            position: absolute;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-            background: rgba(0,0,0,0.65);
-            text-align: center;
-            z-index: 3;
-        }
-
-        .film-play-overlay.visible {
-            display: flex;
-        }
-
-        .film-play-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            padding: 17px 28px;
-            border: none;
-            border-radius: 100px;
-            background: #fff;
-            color: #000;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: transform 0.3s ease, background 0.3s ease;
-        }
-
-        .film-play-button:hover {
-            transform: translateY(-4px);
-            background: #ddd;
-        }
-
-        .film-play-button span {
-            font-size: 18px;
-        }
-
-        .film-play-overlay p {
-            color: rgba(255,255,255,0.65);
-            font-size: 12px;
-        }
-
-        .film-footer {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-top: 24px;
-            color: rgba(255,255,255,0.4);
-            font-size: 10px;
-            letter-spacing: 0.15em;
-        }
-
-
-        /* ABOUT SECTION */
-
-        .about-section {
-            position: relative;
-            padding: 220px 6vw;
-            background: #050505;
-        }
-
-        .about-container {
-            width: min(1100px, 100%);
-            margin: 0 auto;
-        }
-
-        .about-container h2 {
-            max-width: 900px;
-            margin-bottom: 45px;
-            font-size: clamp(52px, 8vw, 120px);
-            line-height: 0.92;
-            letter-spacing: -0.065em;
-            font-weight: 600;
-        }
-
-        .about-container h2 span {
-            color: rgba(255,255,255,0.35);
-        }
-
-        .about-container p {
-            max-width: 650px;
-            font-size: 19px;
-            line-height: 1.8;
-            color: rgba(255,255,255,0.55);
-        }
-
-
-        /* CONTACT SECTION */
-
-        .contact-section {
-            position: relative;
-            padding: 220px 6vw;
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-            background:
-                radial-gradient(
-                    circle at 50% 50%,
-                    rgba(255,255,255,0.07),
-                    transparent 50%
-                ),
-                #000;
-        }
-
-        .contact-container {
-            width: min(1000px, 100%);
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .contact-container h2 {
-            margin-bottom: 35px;
-            font-size: clamp(52px, 8vw, 120px);
-            line-height: 0.92;
-            letter-spacing: -0.065em;
-            font-weight: 600;
-        }
-
-        .contact-container h2 span {
-            color: rgba(255,255,255,0.35);
-        }
-
-        .contact-container p {
-            max-width: 500px;
-            margin: 0 auto 40px;
-            font-size: 17px;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.5);
-        }
-
-        .contact-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            padding: 18px 28px;
-            border-radius: 100px;
-            background: #fff;
-            color: #000;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .contact-button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(255,255,255,0.15);
-        }
-
-
-        /* FOOTER */
-
-        .footer {
-            padding: 30px 6vw;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #000;
-        }
-
-        .footer p {
-            font-size: 11px;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 0.08em;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.45);
-            text-decoration: none;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: color 0.25s ease;
-        }
-
-        .footer-links a:hover {
-            color: #fff;
-        }
-
-
-        /* RESPONSIVE */
-
-        @media (max-width: 768px) {
-
-            .portfolio-header {
-                padding: 20px;
-            }
-
-            .portfolio-nav {
-                gap: 14px;
-            }
-
-            .portfolio-nav a {
-                font-size: 9px;
-            }
-
-            .text-box {
-                width: calc(100vw - 40px);
-                padding: 22px;
-                border-radius: 18px;
-            }
-
-            .box-1 {
-                left: 20px;
-                top: 25%;
-            }
-
-            .box-2 {
-                right: 20px;
-                top: 55%;
-            }
-
-            .box-3 {
-                left: 50%;
-                top: 72%;
-            }
-
-            .text-box h2 {
-                font-size: 28px;
-            }
-
-            .text-box p {
-                font-size: 14px;
-            }
-
-            .work-section {
-                padding: 120px 20px 100px;
-            }
-
-            .section-heading {
-                margin-bottom: 70px;
-            }
-
-            .section-heading h2 {
-                font-size: 52px;
-            }
-
-            .project-card {
-                grid-template-columns: 1fr;
-                min-height: auto;
-                margin-bottom: 35px;
-                border-radius: 22px;
-            }
-
-            .project-info {
-                min-height: 450px;
-                padding: 30px;
-            }
-
-            .project-visual {
-                min-height: 300px;
-                height: 300px;
-            }
-
-            .project-content h3 {
-                font-size: 40px;
-            }
-
-            /* SHORT FILM MOBILE */
-
-            .film-section {
-                padding: 120px 20px;
-            }
-
-            .film-heading {
-                margin-bottom: 45px;
-            }
-
-            .film-heading h2 {
-                font-size: 52px;
-            }
-
-            .film-player {
-                border-radius: 16px;
-                aspect-ratio: 16 / 9;
-            }
-
-            .film-footer {
-                flex-direction: column;
-                gap: 12px;
-                font-size: 9px;
-            }
-
-            .about-section {
-                padding: 130px 20px;
-            }
-
-            .about-container h2 {
-                font-size: 54px;
-            }
-
-            .contact-section {
-                padding: 130px 20px;
-            }
-
-            .contact-container h2 {
-                font-size: 54px;
-            }
-
-            .footer {
-                padding: 25px 20px;
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
-
-        }
-
-
-        /* REDUCE MOTION */
-
-        @media (prefers-reduced-motion: reduce) {
-
-            .text-box {
-                transition: none;
-            }
-
-            .scroll-line {
-                animation: none;
-            }
-
-            .loader-spinner {
-                animation: none;
-            }
-
-            .project-card,
-            .project-visual img,
-            .project-button,
-            .film-play-button {
-                transition: none;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pon Karan S — Creative Developer & UI/UX Designer">
+<title>Pon Karan S — Creative Developer & UI/UX Designer</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto;background:#000}
+body{margin:0;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;overflow-x:hidden}
+
+.scroll-container{position:relative;height:800vh;width:100%;background:#000}
+.sticky-container{position:sticky;top:0;width:100vw;height:100vh;overflow:hidden;background:#000}
+#sequenceCanvas{display:block;width:100vw;height:100vh;object-fit:cover;object-position:center center;background:#000}
+
+.gradient-overlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.35),transparent 25%,transparent 70%,rgba(0,0,0,.45));z-index:2}
+
+.text-layer{position:absolute;inset:0;pointer-events:none;z-index:5}
+.text-box{position:absolute;width:min(420px,80vw);padding:28px 30px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:linear-gradient(135deg,rgba(18,18,18,.58),rgba(18,18,18,.22));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 24px 80px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.10);opacity:0;transform:translateY(35px) scale(.96);transition:opacity .45s ease,transform .45s ease;will-change:opacity,transform}
+.text-box.active{opacity:1;transform:translateY(0) scale(1)}
+.box-1{left:8%;top:50%;transform:translateY(calc(-50% + 35px)) scale(.96)}
+.box-1.active{transform:translateY(-50%) scale(1)}
+.box-2{right:8%;top:50%;transform:translateY(calc(-50% + 35px)) scale(.96)}
+.box-2.active{transform:translateY(-50%) scale(1)}
+.box-3{left:50%;top:70%;transform:translate(-50%,35px) scale(.96)}
+.box-3.active{transform:translate(-50%,0) scale(1)}
+
+.text-box .eyebrow{display:block;margin-bottom:10px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.text-box h2{margin-bottom:12px;font-size:clamp(26px,3vw,42px);line-height:1.05;font-weight:600;letter-spacing:-.04em}
+.text-box p{font-size:15px;line-height:1.65;color:rgba(255,255,255,.68)}
+
+.portfolio-header{position:absolute;top:0;left:0;width:100%;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;z-index:8;pointer-events:none}
+.brand{pointer-events:auto;color:#fff;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:.18em}
+.brand span{opacity:.45}
+.portfolio-nav{display:flex;gap:28px;pointer-events:auto}
+.portfolio-nav a{color:rgba(255,255,255,.62);text-decoration:none;font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:color .25s ease}
+.portfolio-nav a:hover{color:#fff}
+
+.loader{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:14px;pointer-events:none;transition:opacity .5s ease}
+.loader.hidden{opacity:0}
+.loader-spinner{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#fff;animation:spin .8s linear infinite}
+.loader-text{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.5);font-size:10px;letter-spacing:.15em;text-transform:uppercase;transition:opacity .5s ease}
+.scroll-indicator.hidden{opacity:0}
+.scroll-line{width:1px;height:45px;background:linear-gradient(to bottom,rgba(255,255,255,.7),rgba(255,255,255,0));animation:scrollPulse 1.6s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.35;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
+
+/* WORK SECTION */
+
+.work-section{position:relative;padding:180px 6vw 160px;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.06),transparent 45%),#000;color:#fff}
+.section-container{width:min(1400px,100%);margin:0 auto}
+.section-heading{max-width:720px;margin-bottom:110px}
+.section-eyebrow{display:block;margin-bottom:22px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.section-heading h2{font-size:clamp(48px,7vw,100px);line-height:.95;letter-spacing:-.06em;font-weight:600;margin-bottom:30px}
+.section-heading h2 span,.about-container h2 span,.contact-container h2 span,.film-heading h2 span{color:rgba(255,255,255,.35)}
+.section-heading p{max-width:520px;font-size:17px;line-height:1.7;color:rgba(255,255,255,.55)}
+
+.project-card{display:grid;grid-template-columns:minmax(280px,.7fr) minmax(400px,1.3fr);min-height:600px;margin-bottom:80px;border:1px solid rgba(255,255,255,.10);border-radius:30px;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.015));transition:transform .5s ease,border-color .5s ease,box-shadow .5s ease}
+.project-card:hover{transform:translateY(-8px);border-color:rgba(255,255,255,.20);box-shadow:0 40px 100px rgba(0,0,0,.45)}
+.project-info{position:relative;display:flex;flex-direction:column;padding:55px;justify-content:space-between}
+.project-number{font-size:12px;letter-spacing:.15em;color:rgba(255,255,255,.35)}
+.project-content{max-width:430px}
+.project-category{display:block;margin-bottom:18px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.40)}
+.project-content h3{margin-bottom:18px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.05em;font-weight:600}
+.project-content p{margin-bottom:32px;font-size:15px;line-height:1.7;color:rgba(255,255,255,.55)}
+.project-button{display:inline-flex;align-items:center;gap:14px;padding:14px 20px;border:1px solid rgba(255,255,255,.16);border-radius:100px;color:#fff;text-decoration:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.04);transition:background .3s ease,border-color .3s ease,transform .3s ease}
+.project-button span{font-size:16px;transition:transform .3s ease}
+.project-button:hover{background:#fff;color:#000;border-color:#fff;transform:translateY(-2px)}
+.project-button:hover span{transform:translate(3px,-3px)}
+.project-visual{position:relative;min-height:600px;overflow:hidden;background:#111}
+.project-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 40%);pointer-events:none}
+.project-visual img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.project-card:hover .project-visual img{transform:scale(1.04)}
+
+/* FILM SECTION */
+
+.film-section{position:relative;padding:160px 6vw;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.07),transparent 48%),#050505;color:#fff}
+.film-container{width:min(1200px,100%);margin:0 auto}
+.film-heading{max-width:720px;margin-bottom:55px}
+.film-heading h2{margin-bottom:22px;font-size:clamp(48px,7vw,92px);line-height:.95;letter-spacing:-.06em;font-weight:600}
+.film-heading p{max-width:540px;font-size:16px;line-height:1.7;color:rgba(255,255,255,.55)}
+.film-player-wrap{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:28px;background:#090909;box-shadow:0 35px 100px rgba(0,0,0,.45)}
+.short-film-video{display:block;width:100%;max-height:720px;aspect-ratio:16/9;object-fit:contain;background:#000}
+.film-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.38);opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease}
+.film-play-overlay.visible{opacity:1;visibility:visible}
+.film-play-button{border:1px solid rgba(255,255,255,.35);border-radius:100px;padding:16px 25px;color:#000;background:#fff;font:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+
+/* ABOUT SECTION */
+
+.about-section{position:relative;padding:220px 6vw;background:#050505}
+.about-container{width:min(1100px,100%);margin:0 auto}
+.about-container h2{max-width:900px;margin-bottom:45px;font-size:clamp(52px,8vw,120px);line-height:.92;letter-spacing:-.065em;font-weight:600}
+.about-container p{max-width:650px;font-size:19px;line-height:1.8;color:rgba(255,255,255,.55)}
+
+/* CONTACT */
+
+.contact-section{position:relative;padding:220px 6vw;min-height:80vh;display:flex;align-items:center;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.07),transparent 50%),#000}
+.contact-container{width:min(1000px,100%);margin:0 auto;text-align:center}
+.contact-container h2{margin-bottom:35px;font-size:clamp(52px,8vw,120px);line-height:.92;letter-spacing:-.065em;font-weight:600}
+.contact-container p{max-width:500px;margin:0 auto 40px;font-size:17px;line-height:1.7;color:rgba(255,255,255,.5)}
+.contact-button{display:inline-flex;align-items:center;gap:14px;padding:18px 28px;border-radius:100px;background:#fff;color:#000;text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:transform .3s ease,box-shadow .3s ease}
+.contact-button:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(255,255,255,.15)}
+
+/* FOOTER */
+
+.footer{padding:30px 6vw;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;background:#000}
+.footer p{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.08em}
+.footer-links{display:flex;gap:25px}
+.footer-links a{color:rgba(255,255,255,.45);text-decoration:none;font-size:11px;text-transform:uppercase;letter-spacing:.1em;transition:color .25s ease}
+.footer-links a:hover{color:#fff}
+
+/* VIRTUAL CHARACTER */
+
+.virtual-assistant{
+position:fixed;
+right:28px;
+bottom:24px;
+z-index:1000;
+display:flex;
+align-items:flex-end;
+gap:12px;
+pointer-events:none;
+}
+
+.virtual-character-button{
+width:clamp(110px,15vw,190px);
+height:clamp(150px,22vw,250px);
+padding:0;
+border:0;
+background:transparent;
+cursor:pointer;
+pointer-events:auto;
+filter:drop-shadow(0 12px 24px rgba(0,0,0,.45));
+transition:transform .25s ease;
+}
+
+.virtual-character-button:hover{
+transform:translateY(-6px) scale(1.025);
+}
+
+.virtual-character-button video{
+display:block;
+width:100%;
+height:100%;
+object-fit:contain;
+background:transparent;
+pointer-events:none;
+}
+
+/* PROFILE POPUP */
+
+.virtual-profile-popup{
+position:absolute;
+right:calc(100% + 12px);
+bottom:50px;
+width:min(290px,calc(100vw - 40px));
+padding:22px;
+border:1px solid rgba(255,255,255,.16);
+border-radius:20px;
+background:rgba(15,15,18,.88);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+box-shadow:0 20px 70px rgba(0,0,0,.5);
+opacity:0;
+visibility:hidden;
+transform:translateY(10px) scale(.97);
+transition:opacity .25s ease,transform .25s ease,visibility .25s ease;
+pointer-events:auto;
+}
+
+.virtual-profile-popup.open{
+opacity:1;
+visibility:visible;
+transform:translateY(0) scale(1);
+}
+
+.virtual-profile-popup h3{
+margin:0 0 14px;
+font-size:21px;
+letter-spacing:-.03em;
+}
+
+.virtual-profile-link{
+display:inline-flex;
+align-items:center;
+gap:9px;
+color:#fff;
+text-decoration:none;
+font-size:12px;
+letter-spacing:.06em;
+padding:11px 15px;
+border:1px solid rgba(255,255,255,.2);
+border-radius:30px;
+background:rgba(255,255,255,.06);
+}
+
+.virtual-profile-link:hover{
+background:#fff;
+color:#000;
+}
+
+.virtual-popup-close{
+position:absolute;
+top:10px;
+right:12px;
+border:0;
+background:transparent;
+color:rgba(255,255,255,.65);
+font-size:22px;
+cursor:pointer;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.portfolio-header{padding:20px}
+.portfolio-nav{gap:14px}
+.portfolio-nav a{font-size:9px}
+
+.text-box{width:calc(100vw - 40px);padding:22px;border-radius:18px}
+.box-1{left:20px;top:25%}
+.box-2{right:20px;top:55%}
+.box-3{left:50%;top:72%}
+.text-box h2{font-size:28px}
+.text-box p{font-size:14px}
+
+.work-section{padding:120px 20px 100px}
+.section-heading{margin-bottom:70px}
+.section-heading h2{font-size:52px}
+
+.project-card{
+grid-template-columns:1fr;
+min-height:auto;
+margin-bottom:35px;
+border-radius:22px;
+}
+
+.project-info{min-height:450px;padding:30px}
+.project-visual{min-height:300px;height:300px}
+.project-content h3{font-size:40px}
+
+.about-section{padding:130px 20px}
+.about-container h2{font-size:54px}
+
+.contact-section{padding:130px 20px}
+.contact-container h2{font-size:54px}
+
+.footer{
+padding:25px 20px;
+flex-direction:column;
+gap:20px;
+text-align:center;
+}
+
+.film-section{padding:110px 20px 90px}
+.film-heading{margin-bottom:35px}
+.film-heading h2{font-size:52px}
+.film-player-wrap{border-radius:18px}
+
+.virtual-assistant{
+right:10px;
+bottom:10px;
+}
+
+.virtual-character-button{
+width:105px;
+height:145px;
+}
+
+.virtual-profile-popup{
+right:calc(100% + 5px);
+bottom:25px;
+}
+}
+
+@media(prefers-reduced-motion:reduce){
+.text-box,.project-card,.project-visual img,.project-button,.film-play-overlay,.virtual-profile-popup{transition:none}
+.scroll-line,.loader-spinner{animation:none}
+}
+</style>
 </head>
-
 
 <body>
 
-
-    <!-- CINEMATIC SCROLL EXPERIENCE -->
-
-    <main class="scroll-container">
-
-        <section class="sticky-container">
-
-            <canvas id="sequenceCanvas"></canvas>
-
-            <div class="gradient-overlay"></div>
-
-
-            <!-- PORTFOLIO HEADER -->
-
-            <header class="portfolio-header">
-
-                <a href="https://www.linkedin.com/in/pon-karan/" class="brand">
-                    Pon Karan S<span>.</span>
-                </a>
-
-                <nav class="portfolio-nav" aria-label="Portfolio navigation">
-
-                    <a href="#work">Work</a>
-
-                    <a href="#film">Film</a>
-
-                    <a href="#about">About</a>
-
-                    <a href="#contact">Contact</a>
-
-                </nav>
-
-            </header>
-
-
-            <!-- LOADER -->
-
-            <div class="loader" id="loader">
-
-                <div class="loader-spinner"></div>
-
-                <div class="loader-text">
-                    Loading experience
-                </div>
-
-            </div>
-
-
-            <!-- HERO TEXT -->
-
-            <div class="text-layer">
-
-                <article class="text-box box-1"
-                    data-start="0.04"
-                    data-end="0.24">
-
-                    <span class="eyebrow">01 — Welcome</span>
-
-                    <h2>Step into my workspace.</h2>
-
-                    <p>
-                        I'm Pon Karan S — a creative developer
-                        and UI/UX designer building digital
-                        experiences where design, technology,
-                        and interaction come together.
-                    </p>
-
-                </article>
-
-
-                <article class="text-box box-2"
-                    data-start="0.30"
-                    data-end="0.58">
-
-                    <span class="eyebrow">02 — What I Create</span>
-
-                    <h2>Ideas turned into experiences.</h2>
-
-                    <p>
-                        From responsive websites and UI/UX
-                        concepts to data-driven interfaces
-                        and AI-powered projects, I turn ideas
-                        into clean, interactive products.
-                    </p>
-
-                </article>
-
-
-                <article class="text-box box-3"
-                    data-start="0.64"
-                    data-end="0.88">
-
-                    <span class="eyebrow">03 — Let's Build</span>
-
-                    <h2>Have an idea?</h2>
-
-                    <p>
-                        Explore my projects, discover how I work,
-                        and let's create something meaningful together.
-                    </p>
-
-                </article>
-
-            </div>
-
-
-            <!-- SCROLL INDICATOR -->
-
-            <div class="scroll-indicator" id="scrollIndicator">
-
-                <span>Scroll</span>
-
-                <div class="scroll-line"></div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-
-    <!-- WORK SECTION -->
-
-    <section id="work" class="work-section">
-
-        <div class="section-container">
-
-            <div class="section-heading">
-
-                <span class="section-eyebrow">
-                    04 — Selected Work
-                </span>
-
-                <h2>
-                    Ideas turned into
-                    <span>interfaces.</span>
-                </h2>
-
-                <p>
-                    A collection of UI/UX projects,
-                    digital products, and creative
-                    interfaces I've designed.
-                </p>
-
-            </div>
-
-
-            <!-- PROJECT 01 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">01</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>UI concept for Amul’s Milkshake Series</h3>
-
-                        <p>
-                            A vibrant, modern product landing page
-                            showcasing Amul’s strawberry milkshake
-                            with bold visuals and engaging interactions.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/26827917-UI-concept-for-Amul-s-Milkshake-Series"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="strawberry page.png"
-                        alt="Amul milkshake UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 02 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">02</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>Royal Enfield Classic 350 landing page.</h3>
-
-                        <p>
-                            A bold motorcycle landing page combining
-                            premium aesthetics, dynamic visuals, and
-                            performance-focused design.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/26827913-Royal-Enfield-Classic-350-landing-page"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="bike 1.png"
-                        alt="Royal Enfield UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 03 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">03</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>UI concept for Kinder Joy – DC Edition</h3>
-
-                        <p>
-                            A playful e-commerce landing page blending
-                            vibrant visuals, intuitive navigation,
-                            and interactive elements.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/26827975-UI-concept-for-Kinder-Joy-DC-Edition"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="boys kinderjoy.jpg"
-                        alt="Kinder Joy UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 04 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">04</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>Khushi travel buddy</h3>
-
-                        <p>
-                            A vibrant travel platform connecting explorers
-                            with destinations, travel buddies, and adventures.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/26831018-Khushi-travel-buddy"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="HOME PAGE.png"
-                        alt="Khushi travel UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 05 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">05</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>Linkedin UI Redesign</h3>
-
-                        <p>
-                            A modern social networking platform designed
-                            for professional connections, content sharing,
-                            networking, and career growth.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/27296907-Linkedin-UI-Redesign"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="social media.jpg"
-                        alt="LinkedIn UI redesign"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 06 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">06</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>EV cars showcase design</h3>
-
-                        <p>
-                            A sleek electric vehicle website showcasing
-                            futuristic design, immersive visuals,
-                            intuitive navigation, and sustainable mobility.
-                        </p>
-
-                        <a href="https://www.figma.com/proto/G7WIamFVJ2pFTkYCpiQicg?node-id=0-1&t=8DY95XtiUmSLn23P-6"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="WhatsApp Image 2026-08-09 at 2.20.47 PM.jpeg"
-                        alt="EV website UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 07 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">07</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>Space website UI design</h3>
-
-                        <p>
-                            An immersive space exploration website
-                            blending futuristic visuals, cosmic storytelling,
-                            and intuitive navigation.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/27393055-Space-website-UI-design"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="Desktop - 7.jpg"
-                        alt="Space website UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-
-            <!-- PROJECT 08 -->
-
-            <article class="project-card">
-
-                <div class="project-info">
-
-                    <span class="project-number">08</span>
-
-                    <div class="project-content">
-
-                        <span class="project-category">UI/UX Design</span>
-
-                        <h3>AI landing pages</h3>
-
-                        <p>
-                            A modern AI platform landing page combining
-                            clean design, engaging visuals, and intuitive
-                            interactions to showcase ChatGPT's capabilities.
-                        </p>
-
-                        <a href="https://dribbble.com/shots/27403666-AI-landing-pages"
-                            class="project-button">
-                            View Project <span>↗</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <div class="project-visual">
-
-                    <img src="chatgpt.jpg"
-                        alt="AI landing page UI design"
-                        loading="lazy">
-
-                </div>
-
-            </article>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =========================================================
-         SHORT FILM SECTION — NEW
-    ========================================================== -->
-
-    <section id="film" class="film-section">
-
-        <div class="film-container">
-
-            <div class="film-heading">
-
-                <span class="section-eyebrow">
-                    05 — Featured Film
-                </span>
-
-                <h2>
-                    Stories beyond
-                    <span>interfaces.</span>
-                </h2>
-
-                <p>
-                    A short film that brings storytelling,
-                    creativity and visual imagination together.
-                </p>
-
-            </div>
-
-
-            <div class="film-player">
-
-                <video
-                    id="shortFilm"
-                    class="short-film-video"
-                    autoplay
-                    playsinline
-                    preload="metadata"
-                    controls
-                >
-
-                    <source
-                        src="videos/my-shortfilm.mp4"
-                        type="video/mp4"
-                    >
-
-                    Your browser does not support HTML5 video.
-
-                </video>
-
-
-                <!-- AUTOPLAY FALLBACK -->
-
-                <div
-                    class="film-play-overlay"
-                    id="filmPlayOverlay"
-                >
-
-                    <button
-                        type="button"
-                        id="filmPlayButton"
-                        class="film-play-button"
-                    >
-
-                        <span>▶</span>
-
-                        Play Short Film
-
-                    </button>
-
-                    <p>
-                        Click to experience the film with sound.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="film-footer">
-
-                <span>AN ORIGINAL SHORT FILM</span>
-
-                <span>CREATED BY PON KARAN S</span>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ABOUT SECTION -->
-
-    <section id="about" class="about-section">
-
-        <div class="about-container">
-
-            <span class="section-eyebrow">
-                06 — About
-            </span>
-
-            <h2>
-                Designing with
-                <span>curiosity.</span>
-            </h2>
-
-            <p>
-                I'm Pon Karan S, a creative developer and UI/UX
-                designer interested in building meaningful
-                digital experiences through design,
-                technology and interaction.
-            </p>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- CONTACT SECTION -->
-
-    <section id="contact" class="contact-section">
-
-        <div class="contact-container">
-
-            <span class="section-eyebrow">
-                07 — Contact
-            </span>
-
-            <h2>
-                Let's build something
-                <span>interesting.</span>
-            </h2>
-
-            <p>
-                Have a project, idea, or opportunity?
-                Let's start a conversation.
-            </p>
-
-            <a
-                href="https://wa.me/9344883713"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="contact-button"
-            >
-
-                Get in touch <span>↗</span>
-
-            </a>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- FOOTER -->
-
-    <footer class="footer">
-
-        <p>
-            © 2026 Pon Karan S. ALL RIGHTS RESERVED.
-        </p>
-
-        <a href="mailto:karan271106@gmail.com">
-            <p>karan271106@gmail.com</p>
-        </a>
-
-        <div class="footer-links">
-
-            <a href="#work">Work</a>
-
-            <a href="#film">Film</a>
-
-            <a href="#about">About</a>
-
-            <a href="#contact">Contact</a>
-
-        </div>
-
-    </footer>
-
-
-
-    <!-- =========================================================
-         JAVASCRIPT
-         300 FRAME SCROLL SEQUENCE
-    ========================================================== -->
-
-    <script>
-
-        /* CONFIGURATION */
-
-        const TOTAL_FRAMES = 300;
-
-        const IMAGE_FOLDER = "";
-
-        const FRAME_PREFIX = "ezgif-frame-";
-
-        const FRAME_EXTENSION = ".jpg";
-
-
-        /* DOM ELEMENTS */
-
-        const canvas =
-            document.getElementById("sequenceCanvas");
-
-        const context =
-            canvas.getContext("2d");
-
-        const loader =
-            document.getElementById("loader");
-
-        const scrollIndicator =
-            document.getElementById("scrollIndicator");
-
-        const textBoxes =
-            document.querySelectorAll(".text-box");
-
-
-        /* IMAGE CACHE */
-
-        const images =
-            new Array(TOTAL_FRAMES);
-
-
-        /* STATE */
-
-        let currentFrame = 0;
-
-        let targetFrame = 0;
-
-        let animationFrameRequest = null;
-
-        let loadedFrames = 0;
-
-        let firstFrameReady = false;
-
-
-        /* GENERATE IMAGE PATH */
-
-        function getFramePath(frameNumber) {
-
-            const paddedNumber =
-                String(frameNumber).padStart(3, "0");
-
-            return (
-                IMAGE_FOLDER +
-                FRAME_PREFIX +
-                paddedNumber +
-                FRAME_EXTENSION
-            );
+<main class="scroll-container">
+<section class="sticky-container">
+
+<canvas id="sequenceCanvas"></canvas>
+<div class="gradient-overlay"></div>
+
+<header class="portfolio-header">
+<a href="https://www.linkedin.com/in/pon-karan/" class="brand">Pon Karan S<span>.</span></a>
+
+<nav class="portfolio-nav" aria-label="Portfolio navigation">
+<a href="#work">Work</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</nav>
+</header>
+
+<div class="loader" id="loader">
+<div class="loader-spinner"></div>
+<div class="loader-text">Loading experience</div>
+</div>
+
+<div class="text-layer">
+
+<article class="text-box box-1" data-start="0.04" data-end="0.24">
+<span class="eyebrow">01 — Welcome</span>
+<h2>Step into my workspace.</h2>
+<p>I'm Pon Karan S — a creative developer and UI/UX designer building digital experiences where design, technology, and interaction come together.</p>
+</article>
+
+<article class="text-box box-2" data-start="0.30" data-end="0.58">
+<span class="eyebrow">02 — What I Create</span>
+<h2>Ideas turned into experiences.</h2>
+<p>From responsive websites and UI/UX concepts to data-driven interfaces and AI-powered projects, I turn ideas into clean, interactive products.</p>
+</article>
+
+<article class="text-box box-3" data-start="0.64" data-end="0.88">
+<span class="eyebrow">03 — Let’s Build</span>
+<h2>Have an idea?</h2>
+<p>Explore my projects, discover how I work, and let’s create something meaningful together.</p>
+</article>
+
+</div>
+
+<div class="scroll-indicator" id="scrollIndicator">
+<span>Scroll</span>
+<div class="scroll-line"></div>
+</div>
+
+</section>
+</main>
+
+<!-- WORK SECTION -->
+
+<section id="work" class="work-section">
+<div class="section-container">
+
+<div class="section-heading">
+<span class="section-eyebrow">04 — Selected Work</span>
+<h2>Ideas turned into <span>interfaces.</span></h2>
+<p>A collection of UI/UX projects, digital products, and creative interfaces I've designed.</p>
+</div>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">01</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>UI concept for Amul’s Milkshake Series</h3>
+<p>A vibrant, modern product landing page showcasing Amul’s strawberry milkshake with bold visuals and engaging user interactions.</p>
+<a href="https://dribbble.com/shots/26827917-UI-concept-for-Amul-s-Milkshake-Series" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="strawberry page.png" alt="Amul milkshake UI design" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">02</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>Royal Enfield Classic 350 landing page.</h3>
+<p>A bold motorcycle landing page combining premium aesthetics, dynamic visuals, and performance-focused design for an immersive experience.</p>
+<a href="https://dribbble.com/shots/26827913-Royal-Enfield-Classic-350-landing-page" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="bike 1.png" alt="Royal Enfield UI design" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">03</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>UI concept for Kinder Joy – DC Edition</h3>
+<p>A playful e-commerce landing page blending vibrant visuals, intuitive navigation, and interactive elements for an engaging shopping experience.</p>
+<a href="https://dribbble.com/shots/26827975-UI-concept-for-Kinder-Joy-DC-Edition" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="boys kinderjoy.jpg" alt="Kinder Joy UI design" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">04</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>Khushi travel buddy</h3>
+<p>A vibrant travel platform connecting explorers with destinations, travel buddies, and unforgettable adventures around the world.</p>
+<a href="https://dribbble.com/shots/26831018-Khushi-travel-buddy" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="HOME PAGE.png" alt="Khushi travel buddy UI" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">05</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>Linkedin UI Redesign</h3>
+<p>A modern social networking platform designed for professional connections, content sharing, networking, and career growth.</p>
+<a href="https://dribbble.com/shots/27296907-Linkedin-UI-Redesign" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="social media.jpg" alt="LinkedIn redesign" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">06</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>EV cars showcase design</h3>
+<p>A sleek electric vehicle website showcasing futuristic design, immersive visuals, intuitive navigation, and sustainable mobility.</p>
+<a href="https://www.figma.com/proto/G7WIamFVJ2pFTkYCpiQicg?node-id=0-1&t=8DY95XtiUmSLn23P-6" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="WhatsApp Image 2026-08-09 at 2.20.47 PM.jpeg" alt="EV cars showcase" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">07</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>Space website UI design</h3>
+<p>An immersive space exploration website blending futuristic visuals, cosmic storytelling, and intuitive navigation for an engaging experience.</p>
+<a href="https://dribbble.com/shots/27393055-Space-website-UI-design" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="Desktop - 7.jpg" alt="Space website design" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">08</span>
+<div class="project-content">
+<span class="project-category">UI/UX Design</span>
+<h3>AI landing pages</h3>
+<p>A modern AI platform landing page combining clean design, engaging visuals, and intuitive interactions to showcase ChatGPT’s capabilities.</p>
+<a href="https://dribbble.com/shots/27403666-AI-landing-pages" class="project-button">View Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual">
+<img src="chatgpt.jpg" alt="AI landing page design" loading="lazy">
+</div>
+</article>
+
+<article class="project-card">
+<div class="project-info">
+<span class="project-number">09</span>
+<div class="project-content">
+<span class="project-category">Android App · Social Impact</span>
+<h3>KindLink</h3>
+<p>A community-driven resource-sharing platform that connects people who want to donate with people who need essential resources. Users can discover nearby resources, donate items, connect with communities, and track their social impact.</p>
+<p><strong>Tech Stack:</strong> Kotlin, Jetpack Compose, MVVM, Room Database, Supabase, REST API and Google Maps.</p>
+<a href="#contact" class="project-button">Discuss Project <span>↗</span></a>
+</div>
+</div>
+<div class="project-visual" aria-label="KindLink project visual"></div>
+</article>
+
+</div>
+</section>
+
+<!-- FEATURED FILM -->
+
+<section id="short-film" class="film-section">
+<div class="film-container">
+
+<div class="film-heading">
+<span class="section-eyebrow">05 — Featured Film</span>
+<h2>A story in <span>motion.</span></h2>
+<p>A short film from my creative work. Press play if your browser blocks autoplay.</p>
+</div>
+
+<div class="film-player-wrap">
+<video id="shortFilm" class="short-film-video" autoplay playsinline preload="metadata" controls>
+<source src="shortfilm.mp4" type="video/mp4">
+Your browser does not support HTML5 video.
+</video>
+
+<div class="film-play-overlay" id="filmPlayOverlay">
+<button type="button" class="film-play-button" id="filmPlayButton">Play Short Film</button>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- ABOUT -->
+
+<section id="about" class="about-section">
+<div class="about-container">
+<span class="section-eyebrow">06 — About</span>
+<h2>Designing with <span>curiosity.</span></h2>
+<p>I'm Pon Karan S, a creative developer and UI/UX designer interested in building meaningful digital experiences through design, technology and interaction.</p>
+</div>
+</section>
+
+<!-- CONTACT -->
+
+<section id="contact" class="contact-section">
+<div class="contact-container">
+<span class="section-eyebrow">07 — Contact</span>
+<h2>Let's build something <span>interesting.</span></h2>
+<p>Have a project, idea, or opportunity? Let's start a conversation.</p>
+<a href="https://wa.me/9344883713" target="_blank" class="contact-button">Get in touch <span>↗</span></a>
+</div>
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+<p>© 2026 Pon Karan S. ALL RIGHTS RESERVED.</p>
+<a href="mailto:karan271106@gmail.com"><p>karan271106@gmail.com</p></a>
+<div class="footer-links">
+<a href="#work">Work</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</div>
+</footer>
+
+<!-- VIRTUAL CHARACTER -->
+
+<div class="virtual-assistant" id="virtualAssistant">
+
+<div class="virtual-profile-popup" id="virtualProfilePopup" role="dialog" aria-label="Profile information" aria-hidden="true">
+
+<button class="virtual-popup-close" id="virtualPopupClose" type="button" aria-label="Close profile">×</button>
+
+<h3>Pon Karan S</h3>
+
+<a class="virtual-profile-link"
+href="https://www.linkedin.com/in/pon-karan/"
+target="_blank"
+rel="noopener noreferrer">
+LinkedIn Profile ↗
+</a>
+
+</div>
+
+<button class="virtual-character-button"
+id="virtualCharacterButton"
+type="button"
+aria-label="Open Pon Karan profile">
+
+<video id="virtualCharacterVideo"
+autoplay
+muted
+playsinline
+preload="auto">
+</video>
+
+</button>
+
+</div>
+
+<script>
+
+/* =====================================
+   SCROLL ANIMATION - 300 FRAMES
+===================================== */
+
+const TOTAL_FRAMES = 300;
+const IMAGE_FOLDER = "";
+const FRAME_PREFIX = "ezgif-frame-";
+const FRAME_EXTENSION = ".jpg";
+
+const canvas = document.getElementById("sequenceCanvas");
+const context = canvas.getContext("2d");
+
+const loader = document.getElementById("loader");
+const scrollIndicator = document.getElementById("scrollIndicator");
+
+const textBoxes = document.querySelectorAll(".text-box");
+
+const images = new Array(TOTAL_FRAMES);
+
+let currentFrame = 0;
+let targetFrame = 0;
+let animationFrameRequest = null;
+let nextFrameToLoad = 2;
+
+function getFramePath(n) {
+    return IMAGE_FOLDER +
+        FRAME_PREFIX +
+        String(n).padStart(3, "0") +
+        FRAME_EXTENSION;
+}
+
+function loadImage(n) {
+
+    return new Promise((resolve, reject) => {
+
+        if (images[n - 1]) {
+            resolve(images[n - 1]);
+            return;
         }
 
+        const image = new Image();
 
-        /* LOAD SINGLE IMAGE */
+        image.decoding = "async";
 
-        function loadImage(frameNumber) {
+        image.onload = () => {
+            images[n - 1] = image;
+            resolve(image);
+        };
 
-            return new Promise((resolve, reject) => {
+        image.onerror = () => {
+            reject(new Error("Could not load frame " + n));
+        };
 
-                if (images[frameNumber - 1]) {
+        image.src = getFramePath(n);
 
-                    resolve(images[frameNumber - 1]);
+    });
 
-                    return;
-                }
+}
 
-                const image = new Image();
+function drawImageToCanvas(image) {
 
-                image.decoding = "async";
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
 
-                image.onload = () => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
-                    images[frameNumber - 1] = image;
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-                    loadedFrames++;
+}
 
-                    resolve(image);
-                };
+function drawFrame(index) {
 
-                image.onerror = () => {
+    const image = images[index];
 
-                    console.warn(
-                        `Failed to load frame ${frameNumber}`
-                    );
+    if (!image) {
 
-                    reject(
-                        new Error(
-                            `Could not load frame ${frameNumber}`
-                        )
-                    );
-                };
+        let fallback = index;
 
-                image.src = getFramePath(frameNumber);
+        while (fallback >= 0 && !images[fallback]) {
+            fallback--;
+        }
 
+        if (fallback >= 0) {
+            drawImageToCanvas(images[fallback]);
+        }
+
+        return;
+    }
+
+    drawImageToCanvas(image);
+
+}
+
+async function loadFirstFrame() {
+
+    try {
+
+        await loadImage(1);
+
+        drawFrame(0);
+
+        loader.classList.add("hidden");
+
+    } catch (error) {
+
+        console.error("First frame failed:", error);
+
+        loader.querySelector(".loader-text").textContent =
+            "Unable to load images";
+
+    }
+
+}
+
+const CHUNK_SIZE = 10;
+
+function loadNextChunk(deadline) {
+
+    let count = 0;
+
+    while (
+        nextFrameToLoad <= TOTAL_FRAMES &&
+        count < CHUNK_SIZE &&
+        (deadline.timeRemaining() > 5 || deadline.didTimeout)
+    ) {
+
+        loadImage(nextFrameToLoad++).catch(() => {});
+
+        count++;
+
+    }
+
+    if (nextFrameToLoad <= TOTAL_FRAMES) {
+        scheduleIdleTask(loadNextChunk);
+    }
+
+}
+
+function scheduleIdleTask(callback) {
+
+    if ("requestIdleCallback" in window) {
+
+        window.requestIdleCallback(callback, {
+            timeout: 1000
+        });
+
+    } else {
+
+        setTimeout(() => {
+
+            callback({
+                timeRemaining: () => 10,
+                didTimeout: true
             });
-        }
 
+        }, 50);
 
-        /* LOAD FIRST FRAME */
+    }
 
-        async function loadFirstFrame() {
+}
 
-            try {
+function updateScrollProgress() {
 
-                await loadImage(1);
+    const section = document.querySelector(".scroll-container");
 
-                firstFrameReady = true;
+    const max = section.offsetHeight - window.innerHeight;
 
-                drawFrame(0);
+    if (max <= 0) return 0;
 
-                loader.classList.add("hidden");
+    return Math.min(
+        Math.max(window.scrollY / max, 0),
+        1
+    );
 
-            }
+}
 
-            catch (error) {
+function updateTextBoxes(progress) {
 
-                console.error("First frame failed:", error);
+    textBoxes.forEach(box => {
 
-                loader.querySelector(".loader-text").textContent =
-                    "Unable to load images";
-            }
-        }
+        const start = parseFloat(box.dataset.start);
+        const end = parseFloat(box.dataset.end);
 
-
-        /* BACKGROUND FRAME LOADING */
-
-        const CHUNK_SIZE = 10;
-
-        let nextFrameToLoad = 2;
-
-        function loadNextChunk(deadline) {
-
-            let framesLoadedThisChunk = 0;
-
-            while (
-                nextFrameToLoad <= TOTAL_FRAMES &&
-                framesLoadedThisChunk < CHUNK_SIZE &&
-                (
-                    deadline.timeRemaining() > 5 ||
-                    deadline.didTimeout
-                )
-            ) {
-
-                const frameNumber = nextFrameToLoad;
-
-                nextFrameToLoad++;
-
-                framesLoadedThisChunk++;
-
-                loadImage(frameNumber).catch(() => {});
-
-            }
-
-            if (nextFrameToLoad <= TOTAL_FRAMES) {
-
-                scheduleIdleTask(loadNextChunk);
-
-            }
-
-        }
-
-
-        /* IDLE CALLBACK FALLBACK */
-
-        function scheduleIdleTask(callback) {
-
-            if ("requestIdleCallback" in window) {
-
-                window.requestIdleCallback(
-                    callback,
-                    { timeout: 1000 }
-                );
-
-            }
-
-            else {
-
-                window.setTimeout(() => {
-
-                    callback({
-                        timeRemaining: () => 10,
-                        didTimeout: true
-                    });
-
-                }, 50);
-
-            }
-        }
-
-
-        /* DRAW FRAME */
-
-        function drawFrame(frameIndex) {
-
-            const image = images[frameIndex];
-
-            if (!image) {
-
-                let fallbackIndex = frameIndex;
-
-                while (
-                    fallbackIndex >= 0 &&
-                    !images[fallbackIndex]
-                ) {
-
-                    fallbackIndex--;
-
-                }
-
-                if (
-                    fallbackIndex >= 0 &&
-                    images[fallbackIndex]
-                ) {
-
-                    drawImageToCanvas(images[fallbackIndex]);
-
-                }
-
-                return;
-            }
-
-            drawImageToCanvas(image);
-        }
-
-
-        /* DRAW IMAGE TO CANVAS */
-
-        function drawImageToCanvas(image) {
-
-            canvas.width = image.naturalWidth;
-
-            canvas.height = image.naturalHeight;
-
-            context.clearRect(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-
-            context.drawImage(
-                image,
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-        }
-
-
-        /* UPDATE SCROLL PROGRESS */
-
-        function updateScrollProgress() {
-
-            const scrollTop = window.scrollY;
-
-            const sequenceSection =
-                document.querySelector(".scroll-container");
-
-            const sequenceHeight =
-                sequenceSection.offsetHeight;
-
-            const maxScroll =
-                sequenceHeight - window.innerHeight;
-
-            if (maxScroll <= 0) {
-                return 0;
-            }
-
-            return Math.min(
-                Math.max(scrollTop / maxScroll, 0),
-                1
-            );
-        }
-
-
-        /* UPDATE TARGET FRAME */
-
-        function updateTargetFrame() {
-
-            const progress = updateScrollProgress();
-
-            targetFrame = Math.round(
-                progress * (TOTAL_FRAMES - 1)
-            );
-
-            updateTextBoxes(progress);
-
-            if (progress > 0.02) {
-
-                scrollIndicator.classList.add("hidden");
-
-            }
-
-            else {
-
-                scrollIndicator.classList.remove("hidden");
-
-            }
-
-            requestAnimationFrameLoop();
-        }
-
-
-        /* ANIMATION FRAME LOOP */
-
-        function requestAnimationFrameLoop() {
-
-            if (animationFrameRequest !== null) {
-                return;
-            }
-
-            animationFrameRequest =
-                requestAnimationFrame(() => {
-
-                    animationFrameRequest = null;
-
-                    if (currentFrame !== targetFrame) {
-
-                        currentFrame = targetFrame;
-
-                        drawFrame(currentFrame);
-
-                    }
-
-                });
-        }
-
-
-        /* TEXT BOX ANIMATION */
-
-        function updateTextBoxes(progress) {
-
-            textBoxes.forEach(box => {
-
-                const start =
-                    parseFloat(box.dataset.start);
-
-                const end =
-                    parseFloat(box.dataset.end);
-
-                if (
-                    progress >= start &&
-                    progress <= end
-                ) {
-
-                    box.classList.add("active");
-
-                }
-
-                else {
-
-                    box.classList.remove("active");
-
-                }
-
-            });
-        }
-
-
-        /* SCROLL EVENT */
-
-        window.addEventListener(
-            "scroll",
-            updateTargetFrame,
-            { passive: true }
+        box.classList.toggle(
+            "active",
+            progress >= start && progress <= end
         );
 
+    });
 
-        /* INITIALIZATION */
+}
 
-        async function initialize() {
+function requestAnimationFrameLoop() {
 
-            await loadFirstFrame();
+    if (animationFrameRequest !== null) return;
 
-            scheduleIdleTask(loadNextChunk);
+    animationFrameRequest = requestAnimationFrame(() => {
 
-            drawFrame(0);
+        animationFrameRequest = null;
 
-            updateTargetFrame();
+        if (currentFrame !== targetFrame) {
 
-        }
+            currentFrame = targetFrame;
 
-        initialize();
-
-
-        /* PRIORITIZE CURRENT FRAME */
-
-        let lastRequestedFrame = -1;
-
-        window.addEventListener(
-            "scroll",
-            () => {
-
-                const progress = updateScrollProgress();
-
-                const requestedFrame = Math.round(
-                    progress * (TOTAL_FRAMES - 1)
-                );
-
-                if (requestedFrame !== lastRequestedFrame) {
-
-                    lastRequestedFrame = requestedFrame;
-
-                    if (!images[requestedFrame]) {
-
-                        loadImage(requestedFrame + 1)
-                            .catch(() => {});
-
-                    }
-
-                }
-
-            },
-            { passive: true }
-        );
-
-    </script>
-
-
-
-    <!-- =========================================================
-         SHORT FILM AUTOPLAY JAVASCRIPT
-    ========================================================== -->
-
-    <script>
-
-        const filmVideo =
-            document.getElementById("shortFilm");
-
-        const filmOverlay =
-            document.getElementById("filmPlayOverlay");
-
-        const filmPlayButton =
-            document.getElementById("filmPlayButton");
-
-
-        /* AUTOPLAY WITH SOUND */
-
-        async function startShortFilm() {
-
-            filmVideo.muted = false;
-
-            filmVideo.volume = 1;
-
-            try {
-
-                await filmVideo.play();
-
-                filmOverlay.classList.remove("visible");
-
-            }
-
-            catch (error) {
-
-                console.log(
-                    "Autoplay with sound was blocked:",
-                    error
-                );
-
-                filmOverlay.classList.add("visible");
-
-            }
+            drawFrame(currentFrame);
 
         }
 
+    });
 
-        /* MANUAL PLAYBACK */
+}
 
-        filmPlayButton.addEventListener("click", async () => {
+function updateTargetFrame() {
 
-            filmVideo.muted = false;
+    const progress = updateScrollProgress();
 
-            filmVideo.volume = 1;
+    targetFrame = Math.round(
+        progress * (TOTAL_FRAMES - 1)
+    );
 
-            try {
+    updateTextBoxes(progress);
 
-                await filmVideo.play();
+    scrollIndicator.classList.toggle(
+        "hidden",
+        progress > 0.02
+    );
 
-                filmOverlay.classList.remove("visible");
+    requestAnimationFrameLoop();
 
-            }
+}
 
-            catch (error) {
+window.addEventListener(
+    "scroll",
+    updateTargetFrame,
+    { passive: true }
+);
 
-                console.error(
-                    "Video playback failed:",
+async function initialize() {
+
+    await loadFirstFrame();
+
+    scheduleIdleTask(loadNextChunk);
+
+    drawFrame(0);
+
+    updateTargetFrame();
+
+}
+
+initialize();
+
+/* =====================================
+   SHORT FILM PLAYER
+===================================== */
+
+const shortFilm = document.getElementById("shortFilm");
+
+const filmPlayOverlay =
+    document.getElementById("filmPlayOverlay");
+
+const filmPlayButton =
+    document.getElementById("filmPlayButton");
+
+if (shortFilm && filmPlayOverlay && filmPlayButton) {
+
+    shortFilm.muted = false;
+
+    shortFilm.play()
+        .then(() => {
+            filmPlayOverlay.classList.remove("visible");
+        })
+        .catch(() => {
+            filmPlayOverlay.classList.add("visible");
+        });
+
+    filmPlayButton.addEventListener("click", () => {
+
+        shortFilm.muted = false;
+
+        shortFilm.play()
+            .then(() => {
+                filmPlayOverlay.classList.remove("visible");
+            })
+            .catch(error => {
+                console.warn(
+                    "Short film playback could not start:",
                     error
                 );
+            });
 
-            }
+    });
+
+    shortFilm.addEventListener("play", () => {
+        filmPlayOverlay.classList.remove("visible");
+    });
+
+}
+
+/* =====================================
+   LOAD SCROLL FRAMES ON DEMAND
+===================================== */
+
+let lastRequestedFrame = -1;
+
+window.addEventListener("scroll", () => {
+
+    const requested = Math.round(
+        updateScrollProgress() * (TOTAL_FRAMES - 1)
+    );
+
+    if (requested !== lastRequestedFrame) {
+
+        lastRequestedFrame = requested;
+
+        if (!images[requested]) {
+            loadImage(requested + 1).catch(() => {});
+        }
+
+    }
+
+}, { passive: true });
+
+/* =====================================
+   VIRTUAL CHARACTER ASSISTANT
+
+   1. Idle video plays when website loads.
+   2. Clicking character opens profile.
+   3. Action video plays once.
+   4. When action ends, idle restarts.
+   5. Closing popup returns to idle.
+===================================== */
+
+const characterVideo =
+    document.getElementById("virtualCharacterVideo");
+
+const characterButton =
+    document.getElementById("virtualCharacterButton");
+
+const profilePopup =
+    document.getElementById("virtualProfilePopup");
+
+const popupClose =
+    document.getElementById("virtualPopupClose");
+
+/* Video filenames */
+
+const idleVideoURL = "idle.webm";
+const actionVideoURL = "action (2).webm";
+
+let playingAction = false;
+
+/* Play idle video */
+
+function playIdleFromStart() {
+
+    playingAction = false;
+
+    characterVideo.pause();
+
+    characterVideo.loop = false;
+
+    characterVideo.src = idleVideoURL;
+
+    characterVideo.load();
+
+    const playback = characterVideo.play();
+
+    if (playback) {
+
+        playback.catch(error => {
+
+            console.warn(
+                "Idle video playback:",
+                error
+            );
 
         });
 
+    }
 
-        /* START VIDEO */
+}
 
-        startShortFilm();
+/* Open profile popup */
 
+function openProfile() {
 
-        /* VIDEO ERROR */
+    profilePopup.classList.add("open");
 
-        filmVideo.addEventListener("error", () => {
+    profilePopup.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
-            filmOverlay.classList.add("visible");
+}
 
-            filmPlayButton.textContent = "Video unavailable";
+/* Close profile popup */
 
-            filmPlayButton.disabled = true;
+function closeProfile() {
+
+    profilePopup.classList.remove("open");
+
+    profilePopup.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    if (playingAction) {
+        playIdleFromStart();
+    }
+
+}
+
+/* Play action video */
+
+function playAction() {
+
+    openProfile();
+
+    playingAction = true;
+
+    characterVideo.pause();
+
+    characterVideo.loop = false;
+
+    characterVideo.src = actionVideoURL;
+
+    characterVideo.load();
+
+    const playback = characterVideo.play();
+
+    if (playback) {
+
+        playback.catch(error => {
+
+            console.warn(
+                "Action video playback:",
+                error
+            );
+
+            playIdleFromStart();
 
         });
 
-    </script>
+    }
+
+}
+
+/* Character click */
+
+characterButton.addEventListener("click", () => {
+
+    if (playingAction) {
+
+        closeProfile();
+
+    } else {
+
+        playAction();
+
+    }
+
+});
+
+/* Popup close button */
+
+popupClose.addEventListener(
+    "click",
+    closeProfile
+);
+
+/* Return to idle when action ends */
+
+characterVideo.addEventListener("ended", () => {
+
+    if (playingAction) {
+
+        playIdleFromStart();
+
+    }
+
+});
+
+/* Escape key closes popup */
+
+document.addEventListener("keydown", event => {
+
+    if (
+        event.key === "Escape" &&
+        profilePopup.classList.contains("open")
+    ) {
+
+        closeProfile();
+
+    }
+
+});
+
+/* Start idle video */
+
+playIdleFromStart();
+
+</script>
 
 </body>
-
 </html>
